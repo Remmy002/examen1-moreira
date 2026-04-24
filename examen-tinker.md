@@ -340,3 +340,83 @@ w PHP manual is available (latest: 3.0.5). Update with `doc --update-manual`
 
 >     
 // P12
+
+> $note = App\Models\Note::find(1);
+
+= App\Models\Note {#8540
+    id: 1,
+    title: "Sed ipsa similique.",
+    content: "Repellendus expedita deleniti in consectetur optio laborum. Non totam enim ut aut in reprehenderit provident. Ipsa est vel inventore. In et quaerat nihil voluptas.",
+    is_pinned: false,
+    category_id: 1,
+    created_at: "2026-04-24 13:01:39",
+    updated_at: "2026-04-24 13:01:39",
+  }
+
+>
+
+> $note->users()->detach(5);
+
+= 1
+
+>
+// Verificación (debe devolver null si ya no existe la relación)
+> $note->users()->where('user_id', 5)->first();
+
+= null
+
+>          
+
+
+// P13
+// Contar cuántas notas hay actualmente
+> App\Models\Note::count();
+
+= 10
+
+>    
+
+// Elegir la primera categoría y ver su ID
+
+> $cat = App\Models\Category::first();
+
+= App\Models\Category {#8502
+    id: 1,
+    name: "et",
+    description: "Sequi natus voluptatum amet perferendis.",
+    created_at: "2026-04-24 13:35:48",
+    updated_at: "2026-04-24 13:35:48",
+  }
+
+> $id = $cat->id;
+
+= 1
+
+>                                                                                                                       
+// Ver cuántas notas pertenecen a esta categoría específicamente
+
+> App\Models\Note::where('category_id', $id)->count();
+
+= 3
+
+>                                                                                                                       
+// ELIMINAR LA CATEGORÍA (Aquí ocurre la magia de la cascada)
+> $cat->delete();
+
+= true
+
+>   
+
+// Verificar que las notas de esa categoría ya NO existen 
+> App\Models\Note::where('category_id', $id)->count();
+
+= 0
+
+>  
+
+// Verificar el conteo total de notas tiene que ser menor a  Contar cuántas notas hay actualmente
+> App\Models\Note::count();
+
+= 7
+
+>                                                                                                                       
