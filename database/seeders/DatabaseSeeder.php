@@ -15,11 +15,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Crear 5 usuarios
+        $users = \App\Models\User::factory(5)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // 2. Crear 5 categorías
+        $categories = \App\Models\Category::factory(5)->create();
+
+        // 3. Crear 10 notas
+        $notes = \App\Models\Note::factory(10)->recycle($categories)->create();
+
+        // 4. Relacionar notas con usuarios (Tabla Pivote)
+        foreach ($notes as $note) {
+            // Asignar un dueño aleatorio
+            $owner = $users->random();
+            $note->users()->attach($owner->id, ['role' => 'owner']);
+
+            // Asignar un colaborador aleatorio (que no sea el mismo dueño)
+            $collaborator = $users->where('id', '!=', $owner->id)->random();
+            $note->users()->attach($collaborator->id, ['role' => 'collaborator']);
+        }
     }
 }
