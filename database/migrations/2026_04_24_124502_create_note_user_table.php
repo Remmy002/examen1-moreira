@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('note_user', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('note_id')->constrained()->onDelete('cascade');
+            // El rol puede ser 'owner' o 'collaborator'
+            $table->string('role')->default('collaborator'); 
             $table->timestamps();
         });
     }
