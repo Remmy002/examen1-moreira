@@ -1,58 +1,47 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Examen Parcial I - Sistema de Notas Colaborativas
+**Estudiante:** Remmy Moreira  
+**Materia:** INF560 - Desarrollo Web Backend 
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Requisitos
+* PHP 8.3+ 
+* PostgreSQL
+* Composer
 
-## About Laravel
+## Pasos para ejecutar el proyecto desde cero
+1. **Clonar el repositorio.**
+2. **Configurar el entorno:**
+   - Crear una base de datos en PostgreSQL llamada `db_notas_examen`.
+   - Copiar el archivo `.env.example` a `.env` y configurar las credenciales de la BD.
+3. **Instalar dependencias:**
+   ```bash
+   composer install
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+Generar llave y preparar base de datos:
+php artisan key:generate
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Ejecutar Migraciones y Seeders:
+php artisan migrate:fresh --seed
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Bitácora de pruebas:
+Los comandos ejecutados para el examen se encuentran en el archivo examen-tinker.md.
 
-## Agentic Development
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+4.  Baja hasta el final de la página y haz clic en el botón verde que dice **"Commit changes"**.
 
-```bash
-composer require laravel/boost --dev
+### Un último detalle importante:
+En tu archivo **`examen-tinker.md`**, asegúrate de haber incluido la última parte que suele pedir el examen: **La eliminación en cascada (P13)**. 
 
-php artisan boost:install
-```
+Si no la has puesto, puedes probar esto en tu terminal (`php artisan tinker`) y añadirlo al archivo:
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+```php
+// P13: Verificación de eliminación en cascada
+// Al eliminar una categoría, sus notas deberían desaparecer (si configuraste onDelete('cascade'))
+$cat = App\Models\Category::first();
+$cat->delete();
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+// Verificamos si quedan notas huérfanas (debería dar 0 o menos que antes)
+App\Models\Note::where('category_id', $cat->id)->count();
